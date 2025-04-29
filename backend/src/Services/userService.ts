@@ -1,6 +1,7 @@
 import { userModel } from "../Models/userModel";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import { ObjectId } from "mongodb";
 
 const generateJWT = (data: any) => {
     return jwt.sign(data, process.env.SECRET_KEY || '');
@@ -48,15 +49,15 @@ export const login = async ({email, password}: LoginParams) => {
 }
 
 interface DeleteParams {
-    email: string
+    ID: ObjectId
 }
 
-export const remove = async ({email}:DeleteParams) => {
-    const removeUser = await userModel.findOneAndDelete({email});
+export const remove = async ({ID}:DeleteParams) => {
+    const removeUser = await userModel.findByIdAndDelete({ID});
 
     if (!removeUser){
         return {data: "user doesn't exists", statusCode: 400};
     }
 
-    return {data:generateJWT({email}), statusCode: 200};
+    return {data:generateJWT({ID}), statusCode: 200};
 }
