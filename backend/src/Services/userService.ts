@@ -46,3 +46,17 @@ export const login = async ({email, password}: LoginParams) => {
     
     return {data: "incorrect email or password", statusCode: 400};
 }
+
+interface DeleteParams {
+    email: string
+}
+
+export const remove = async ({email}:DeleteParams) => {
+    const removeUser = await userModel.findOneAndDelete({email});
+
+    if (!removeUser){
+        return {data: "user doesn't exists", statusCode: 400};
+    }
+
+    return {data:generateJWT({email}), statusCode: 200};
+}
